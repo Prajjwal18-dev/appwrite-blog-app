@@ -1,6 +1,6 @@
 // Universal code for any appwrite backend used in future
 
-import config from "../config/config";
+import config from "../config/config";  // imports all the environmetnal variables
 
 import { Client , Account , ID } from "appwrite"
 
