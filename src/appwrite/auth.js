@@ -1,6 +1,6 @@
 // Universal code for any appwrite backend used in future
 
-import config from "../config/config";  // imports all the environmetnal variables
+import conf from "../conf/conf";  // imports all the environmetnal variables
 
 import { Client , Account , ID } from "appwrite"
 
@@ -11,8 +11,8 @@ export class AuthService {           //new class created and exported
 
         constructor(){  // when ever class is created and constructor is called this runs
             this.client
-                .setEndpoint(config.url)
-                .setProject(config.ProjectId);
+                .setEndpoint(conf.url)
+                .setProject(conf.ProjectId);
             
             this.account = new Account(client);
         }
