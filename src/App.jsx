@@ -19,7 +19,6 @@ function App() {
         dispatch(logout())
       }
     })
-    .catch(error)
 
     .finally(setLoading(false))
   },[])
@@ -29,7 +28,7 @@ function App() {
       <div className="w-full block">
           <Header />
           <main>
-            {/* <Outlet/> */}
+            {/* <Outlet/> */}Hello
           </main>
           <Footer />
       </div>
