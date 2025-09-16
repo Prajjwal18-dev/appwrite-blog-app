@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 
 
-const SignUp = () => {
+const Signup = () => {
 
     const navigate = useNavigate();
     const [error,setError] = useState('')
@@ -93,4 +93,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default Signup;
