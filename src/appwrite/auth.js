@@ -60,8 +60,7 @@ export class AuthService {
         try {
             return await this.account.get();
         } catch {
-            // This is expected if the user is not logged in.
-            // We don't need to log every instance of this.
+            console.log("No user logged in");
             return null; // IMPROVED: Moved return null here for clarity
         }
     }
