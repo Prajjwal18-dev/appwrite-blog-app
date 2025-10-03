@@ -61,7 +61,7 @@ export class AuthService {
             return await this.account.get();
         } catch {
             console.log("No user logged in");
-            return null; // IMPROVED: Moved return null here for clarity
+            // return null; // IMPROVED: Moved return null here for clarity
         }
     }
 
