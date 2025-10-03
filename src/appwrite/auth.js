@@ -34,7 +34,7 @@ export class AuthService {
         try {
             return await this.account.createEmailPasswordSession(email, password);
         } catch (error) {
-            throw error;
+            console.log("Login to Continue", error);
         }
     }
 
