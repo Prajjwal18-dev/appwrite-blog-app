@@ -1,10 +1,13 @@
-import React, {useEffect,useState} from "react";
-import appwriteService from "../appwrite/config"
-import { Container, PostCard } from "../components";
+import React, {useEffect, useState} from 'react'
+import appwriteService from "../appwrite/config";
+import {Container, PostCard} from '../components'
+import { AuthLayout } from '../components';
+import { useSelector } from 'react-redux';
 
-const Home = () => {
 
-     const [posts, setPosts] = useState([])
+function Home() {
+    const authentication = useSelector(state => state.auth.status);
+    const [posts, setPosts] = useState([])
 
     useEffect(() => {
         appwriteService.getPosts().then((posts) => {
@@ -13,15 +16,17 @@ const Home = () => {
             }
         })
     }, [])
-
-    if(posts.length === 0){
+  
+    if (posts.length === 0) {
         return (
             <div className="w-full py-8 mt-4 text-center">
                 <Container>
                     <div className="flex flex-wrap">
                         <div className="p-2 w-full">
-                            <h1 className="text-2xl font-bold hover:text-gray-500">
-                                Login to read posts
+                            <h1 className="text-2xl font-bold hover:text-gray-500 text-black">
+                                {
+                                    (!authentication) ? "Login to create your first post!" : "No posts found!"
+                                }
                             </h1>
                         </div>
                     </div>
@@ -29,8 +34,8 @@ const Home = () => {
             </div>
         )
     }
-
-  return <div className='w-full py-8'>
+    return (
+        <div className='w-full py-8'>
             <Container>
                 <div className='flex flex-wrap'>
                     {posts.map((post) => (
@@ -40,7 +45,8 @@ const Home = () => {
                     ))}
                 </div>
             </Container>
-        </div>;
-};
+        </div>
+    )
+}
 
-export default Home;
+export default Home

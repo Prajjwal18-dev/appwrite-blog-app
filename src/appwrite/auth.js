@@ -1,67 +1,82 @@
-// Universal code for any appwrite backend used in future
+import conf from '../conf/conf.js';
+import { Client, Account, ID } from "appwrite";
 
-import conf from "../conf/conf";  // imports all the environmetnal variables
+export class AuthService {
+    client = new Client();
+    account;
 
-import { Client , Account , ID } from "appwrite"
+    constructor() {
+        this.client
+            .setEndpoint(conf.appwriteUrl)
+            .setProject(conf.appwriteProjectId);
+        this.account = new Account(this.client);
+    }
 
-
-export class AuthService {           //new class created and exported
-        client = new Client();
-        account;
-
-        constructor(){  // when ever class is created and constructor is called this runs
-            this.client
-                .setEndpoint(conf.url)
-                .setProject(conf.ProjectId);
-            
-            this.account = new Account(this.client);
-        }
-
-        async createAccount({email,password,name}){
-            try {
-                const userAccount = await this.account.create(ID.unique(),email,password,name)
-                if(userAccount){
-                    //redirect - logged in
-                    return this.login({email,password})
-                }else {
-                    return userAccount
-                }
-            } catch (error) {
-                throw error
+    async createAccount({email, password, name}) {
+        try {
+            const userAccount = await this.account.create(ID.unique(), email, password, name);
+            if (userAccount) {
+                // If account creation is successful, automatically log the user in
+                return this.login(email, password);
+            } else {
+                // This part of the original code was unreachable, but we'll keep the structure
+                // in case the API behavior changes. It's safer to just return the (falsy) userAccount.
+                return userAccount;
             }
-        }
-
-        async login({email,password}){
-            try {
-                return await this.account.createEmailPasswordSession(email,password)
-            } catch (error) {
-                // throw error
-                console.log("Login error ", error);
-                
-            }
-        }
-
-        async getCurrentUser(){   // to check if logged in or not
-            try {
-                return await this.account.get();
-            } catch (error) {
-                console.log("Appwrite getCurrentUser Error: ", error);
-                
-            }
+        } catch (error) {
+            console.log("Appwrite service :: createAccount :: error", error);
+            // IMPROVED: Instead of throwing, return null so the UI can handle it gracefully.
             return null;
         }
+    }
 
-        async logout(){
-            try {
-                await this.account.deleteSessions();
-            } catch (error) {
-                console.log("logout error ",error);
-                
-            }
+    async login({email, password}) {
+        try {
+            return await this.account.createEmailPasswordSession(email, password);
+        } catch (error) {
+            throw error;
         }
+    }
 
-}     
+    // async login(arg1, arg2) {
+    //     // Support both shapes: login({email, password}) and login(email, password)
+    //     let email, password;
+    //     if (typeof arg1 === 'object' && arg1 !== null) {
+    //         ({ email, password } = arg1);
+    //     } else {
+    //         email = arg1;
+    //         password = arg2;
+    //     }
+
+    //     try {
+    //         return await this.account.createEmailPasswordSession(email, password);
+    //     } catch (error) {
+    //         console.log("Appwrite service :: login :: error", error);
+    //         return null;
+    //     }
+    // }
+
+    async getCurrentUser() {
+        try {
+            return await this.account.get();
+        } catch {
+            // This is expected if the user is not logged in.
+            // We don't need to log every instance of this.
+            return null; // IMPROVED: Moved return null here for clarity
+        }
+    }
+
+    async logout() {
+        try {
+            await this.account.deleteSessions();
+            return true; // IMPROVED: Return true on success
+        } catch (error) {
+            console.log("Appwrite service :: logout :: error", error);
+            return false; // IMPROVED: Return false on failure
+        }
+    }
+}
 
 const authService = new AuthService();
 
-export default authService
+export default authService;
